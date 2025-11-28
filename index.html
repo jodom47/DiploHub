@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diplohub</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        secondary: '#10b981',
+                        darkbg: '#1a1a1a',
+                        cardbg: '#262626'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }   
+    </script>   
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrS44tSwY4+7jS93Fz0zJ1+9W4t58Vz0nB8fN0Y2u/FfM9d8gN9l9b1G8c7j1c" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-v2P3k+K1xLz4z6nI8uXqR+J4fJ4F4q9t3i6M+F1Jg7d5C6z7b6J5eC6x8y1l4t" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+yW6E8C222/tF3X48QoM5/E27Q1S5p+N4yM5fJ8hY5LzL2+9Y3/F0l9T8/jG6+A" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300 dark:bg-darkbg dark:text-gray-100 font-sans min-h-screen flex flex-col">
+
+    <header class="w-full px-6 py-4 flex justify-between items-center bg-white dark:bg-cardbg shadow-md sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 p-2 rounded-lg">
+                <i data-lucide="graduation-cap" class="w-6 h-6 text-white"></i>
+            </div>
+            <h1 class="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Diplohub</h1>
+        </div>
+        
+        <div class="flex items-center gap-2">
+            <button onclick="toggleDevModal()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition shadow-sm" title="About Devs">
+                <i data-lucide="info" class="w-5 h-5 text-indigo-500"></i>
+            </button>
+
+           
+        </div>
+    </header>
+
+    <main id="view-home" class="flex-grow p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
+        
+        <div class="lg:col-span-4 flex flex-col gap-6">
+            <div class="bg-white dark:bg-cardbg p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 class="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">1. Syllabus Status</h3>
+                <div id="syllabus-status" class="text-red-500 font-bold flex items-center gap-2 text-lg p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                    <i data-lucide="x-circle" class="w-5 h-5"></i> Not Uploaded
+                </div>
+                <a href="https://vpmpce.wordpress.com/" target="_blank" class="text-xs font-medium text-indigo-500 hover:text-indigo-600 mt-3 flex items-center gap-1">
+                    <i data-lucide="download" class="w-3 h-3"></i> Download from vpmpce.wordpress.com
+                </a>
+            </div>
+
+            <div class="bg-white dark:bg-cardbg p-8 rounded-2xl border-2 border-dashed border-indigo-200 dark:border-gray-700 flex-grow flex flex-col items-center justify-center text-center transition-all cursor-pointer group hover:border-indigo-500 dark:hover:border-indigo-500 relative overflow-hidden"
+                 id="drop-syllabus"
+                 ondragover="event.preventDefault(); this.classList.add('drop-active')"
+                 ondragleave="this.classList.remove('drop-active')"
+                 ondrop="handleDrop(event, 'syllabus')"
+                 onclick="document.getElementById('input-syllabus').click()">
+                
+                <div class="absolute inset-0 bg-indigo-50 dark:bg-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="relative z-10">
+                    <div class="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="file-text" class="w-8 h-8 text-indigo-600 dark:text-indigo-400"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-1">2. Upload Syllabus</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Drag & Drop PDF/Image</p>
+                </div>
+                <input type="file" id="input-syllabus" class="hidden" accept=".pdf,image/*" onchange="handleFileSelect(this, 'syllabus')">
+            </div>
+
+            <div class="bg-white dark:bg-cardbg p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg">
+                <h3 class="text-sm font-bold mb-3 uppercase tracking-wider">3. Controls</h3>
+                <button onclick="resetUpload('syllabus')" class="w-full py-2.5 border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl text-sm font-medium transition flex items-center justify-center gap-2">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> Reset Syllabus
+                </button>
+                <div id="ai-msg" class="text-sm text-green-600 dark:text-green-400 font-medium mt-3 hidden flex items-center gap-2 bg-green-50 dark:bg-green-900/20 p-2 rounded-lg">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i> AI Ready to Analyze!
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-4 flex flex-col gap-6">
+            <div class="bg-white dark:bg-cardbg p-8 rounded-2xl border-2 border-dashed border-orange-200 dark:border-gray-700 flex-grow flex flex-col items-center justify-center text-center transition-all cursor-pointer group hover:border-orange-500 dark:hover:border-orange-500 relative overflow-hidden"
+                 id="drop-paper"
+                 ondragover="event.preventDefault(); this.classList.add('drop-active')"
+                 ondragleave="this.classList.remove('drop-active')"
+                 ondrop="handleDrop(event, 'paper')"
+                 onclick="document.getElementById('input-paper').click()">
+                
+                <div class="absolute inset-0 bg-orange-50 dark:bg-orange-900/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="relative z-10">
+                    <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900/50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="files" class="w-8 h-8 text-orange-600 dark:text-orange-400"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-1">5. Old Papers</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Boosts Accuracy (PDF/Img)</p>
+                </div>
+                <input type="file" id="input-paper" class="hidden" accept=".pdf,image/*" onchange="handleFileSelect(this, 'paper')">
+            </div>
+
+            <div class="bg-white dark:bg-cardbg p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 class="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">6. Paper Status</h3>
+                <div id="paper-status" class="text-gray-400 font-bold flex items-center gap-2 text-lg p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                    <i data-lucide="minus-circle" class="w-5 h-5"></i> None
+                </div>
+                <button onclick="resetUpload('paper')" class="text-xs font-medium text-red-400 hover:text-red-500 mt-3 hover:underline">Remove Paper</button>
+                <div id="syllabus-warning" class="hidden mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 text-xs font-semibold rounded-xl border border-yellow-200 dark:border-yellow-800 flex items-start gap-2">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 flex-shrink-0 mt-0.5"></i>
+                    <span>Tip: Upload Syllabus too, for better AI questions!</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-4">
+            <div class="bg-white dark:bg-cardbg p-8 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-2xl h-full flex flex-col justify-center items-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-100 dark:bg-purple-900/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                <div class="absolute bottom-0 left-0 w-32 h-32 bg-indigo-100 dark:bg-indigo-900/20 rounded-full blur-3xl -ml-16 -mb-16"></div>
+                
+                <h3 class="text-xl font-extrabold mb-8 relative z-10">7. Mastery Progress</h3>
+                <div class="relative w-48 h-48 flex items-center justify-center z-10">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                        <path class="text-gray-100 dark:text-gray-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                        <path id="circle-progress" class="text-indigo-600 dark:text-indigo-500 transition-all duration-1000 ease-out drop-shadow-md" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                    </svg>
+                    <div class="absolute flex flex-col items-center">
+                        <span class="text-5xl font-black text-gray-800 dark:text-white tracking-tighter" id="progress-text">0%</span>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wide mt-1">Completed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-12 mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button onclick="startStudySession()" class="group py-5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold text-xl rounded-2xl shadow-xl shadow-indigo-200 dark:shadow-none transform hover:-translate-y-1 transition-all flex items-center justify-center gap-3 relative overflow-hidden">
+                <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 skew-y-12"></div>
+                <span class="relative z-10">4. START STUDY SESSION</span>
+                <i data-lucide="rocket" class="w-6 h-6 relative z-10 group-hover:translate-x-1 transition-transform"></i>
+            </button>
+
+            <button onclick="startQuizSetup()" class="group py-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold text-xl rounded-2xl shadow-xl shadow-purple-200 dark:shadow-none transform hover:-translate-y-1 transition-all flex items-center justify-center gap-3 relative overflow-hidden">
+                <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 skew-y-12"></div>
+                <span class="relative z-10">5. GENERATE QUIZ</span>
+                <i data-lucide="brain-circuit" class="w-6 h-6 relative z-10 group-hover:rotate-12 transition-transform"></i>
+            </button>
+        </div>
+    </main>
+
+   <section id="view-study" class="hidden">
+    <!-- Full Screen Container -->
+    <div class="fixed inset-0 flex flex-col bg-gray-900">
+        
+        <!-- Top Header Bar -->
+        <div class="h-16 px-6 flex items-center border-b border-gray-700 bg-gray-900 flex-shrink-0 justify-between">
+    <button onclick="goHome()" class="flex items-center px-4 py-2 text-sm font-medium text-gray-200 bg-gray-700 rounded-full hover:bg-gray-600 transition-all shadow-md">
+        <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Dashboard
+    </button>
+    
+    <div class="flex gap-2 bg-gray-900 p-1 rounded-xl w-max">
+        <button id="tab-feedback" onclick="switchTab('feedback')" class="px-4 py-2 rounded-lg font-medium text-sm transition bg-blue-900 text-blue-300 hover:text-white">
+            <i data-lucide="clipboard-check" class="w-4 h-4 inline mr-1"></i> Evaluation
+        </button>
+        <button id="tab-formula" onclick="switchTab('formula')" class="px-4 py-2 rounded-lg font-medium text-sm transition text-gray-400 hover:text-gray-200 hover:bg-gray-700">
+            <i data-lucide="sigma" class="w-4 h-4 inline mr-1"></i> Formulas
+        </button>
+    </div>
+</div>
+
+        <!-- Main Content Area: 50-50 Split -->
+        <div class="flex-1 flex min-h-0">
+            
+            <!-- ===== LEFT HALF: Question + Answer ===== -->
+            <div class="w-1/2 flex flex-col border-r border-gray-700">
+                
+                <!-- Question Box (35% of left half) -->
+                <div class="h-[35%] flex flex-col border-b border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900">
+                    <div class="px-6 py-4 border-b border-gray-700 flex-shrink-0">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="help-circle" class="w-5 h-5 text-blue-400"></i>
+                            <h2 class="text-lg font-bold text-blue-400 uppercase">Question</h2>
+                        </div>
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-6">
+                        <div id="loading-spinner" class="hidden flex items-center gap-2 text-blue-400 mb-4">
+                            <i data-lucide="loader" class="w-5 h-5 animate-spin"></i>
+                            <span class="text-sm">Generating question...</span>
+                        </div>
+                        <div id="q-text" class="text-gray-300 text-base leading-relaxed">
+                            Click "Next Question" to start!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Answer Input Box (65% of left half) -->
+                <div class="flex-1 flex flex-col bg-white dark:bg-gray-800">
+                    <div class="px-6 py-3 border-b border-gray-700 flex-shrink-0">
+                        <span class="text-sm font-bold text-gray-400 uppercase">Your Answer</span>
+                    </div>
+                    <div class="flex-1 p-6 min-h-0">
+                        <textarea id="user-answer" class="w-full h-full p-4 bg-gray-900 text-gray-200 rounded-xl border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder-gray-500" placeholder="Type your detailed explanation here..."></textarea>
+                    </div>
+                   <div class="px-6 pb-6 flex justify-between items-center gap-3 flex-shrink-0">
+    <div class="flex gap-3">
+        <button onclick="goHome()" class="px-4 py-2.5 border border-gray-500 text-gray-400 hover:bg-gray-700 font-bold rounded-xl transition text-sm flex items-center gap-2">
+            <i data-lucide="home" class="w-4 h-4"></i> Home
+        </button>
+        <button id="btn-explain" onclick="explainTopic()" class="px-4 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white font-bold rounded-xl transition text-sm">
+            Idk this Topic 🤷‍♂️
+        </button>
+    </div>
+    
+    <div class="flex gap-3">
+        <button onclick="getNewQuestion()" class="px-4 py-2.5 text-gray-400 hover:bg-gray-700 font-bold rounded-xl transition text-sm flex items-center gap-2">
+            <i data-lucide="skip-forward" class="w-4 h-4"></i> Skip
+        </button>
+        <button id="btn-submit" onclick="submitAnswer()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition text-sm flex items-center gap-2">
+            Submit <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+    </div>
+</div>
+                </div>
+            </div>
+
+            <!-- ===== RIGHT HALF: Tabs Area ===== -->
+            <div class="w-1/2 flex flex-col bg-white dark:bg-gray-800">
+
+                
+                <!-- Tab Buttons -->
+                <div class="px-6 py-4 border-b border-gray-700 flex-shrink-0">
+                    <div class="flex gap-2 bg-gray-900 p-1 rounded-xl w-max">
+                        <button id="tab-feedback" onclick="switchTab('feedback')" class="px-4 py-2 rounded-lg font-medium text-sm transition bg-gray-800 text-blue-400">
+                            <i data-lucide="clipboard-check" class="w-4 h-4 inline mr-1"></i> Evaluation
+                        </button>
+                        <button id="tab-formula" onclick="switchTab('formula')" class="px-4 py-2 rounded-lg font-medium text-sm transition text-gray-400 hover:text-gray-200">
+                            <i data-lucide="sigma" class="w-4 h-4 inline mr-1"></i> Formulas
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Content Area -->
+                <div class="flex-1 min-h-0">
+                    
+                    <!-- Evaluation View -->
+                    <div id="view-feedback" class="h-full p-6">
+                        <div id="feedback-area" class="hidden bg-gradient-to-br from-blue-900 to-purple-900 text-white p-6 rounded-2xl h-full flex flex-col">
+                            <div class="flex items-center justify-between mb-4 flex-shrink-0">
+                                <div class="flex items-center gap-2 opacity-80">
+                                    <i data-lucide="clipboard-check" class="w-5 h-5"></i>
+                                    <span class="text-xs font-bold uppercase tracking-widest">Evaluation</span>
+                                </div>
+                                <div class="flex items-end gap-1">
+                                    <span id="fb-score" class="text-5xl font-black">0</span>
+                                    <span class="text-xl font-bold text-blue-300 mb-1">/10</span>
+                                </div>
+                            </div>
+                            <div class="flex-1 overflow-y-auto pr-2 mb-4 min-h-0">
+                                <p id="fb-text" class="text-sm leading-relaxed">Your feedback will appear here.</p>
+                            </div>
+                            <button onclick="getNewQuestion()" class="w-full py-3 bg-white text-blue-900 font-bold rounded-xl hover:bg-blue-50 transition flex items-center justify-center gap-2 flex-shrink-0">
+                                Next Question <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div id="feedback-placeholder" class="border-2 border-dashed border-gray-700 rounded-2xl h-full flex flex-col items-center justify-center text-gray-300">
+    <i data-lucide="ghost" class="w-12 h-12 mb-3 opacity-50"></i>
+    <p class="font-medium">Submit an answer to see your score!</p>
+</div>
+                    </div>
+
+                    <!-- Formulas View -->
+                    <div id="view-formula" class="hidden h-full p-6">
+                        <div class="bg-gray-900 p-6 rounded-2xl border border-gray-700 h-full flex flex-col">
+                            <div class="flex items-center gap-2 mb-4 flex-shrink-0">
+                                <i data-lucide="sigma" class="w-5 h-5 text-orange-400"></i>
+                                <h3 class="font-bold text-orange-400 uppercase">Formulas</h3>
+                            </div>
+                            <div id="formula-content" class="flex-1 overflow-y-auto pr-2 min-h-0">
+                                <div class="flex items-center text-gray-500 text-sm">
+                                    <i data-lucide="sparkles" class="w-4 h-4 mr-2"></i>
+                                    <span>Upload syllabus to auto-detect formulas</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+    <section id="view-quiz" class="hidden flex-grow p-4 md:p-8 max-w-7xl mx-auto w-full animate-fade-in flex flex-col justify-center">
+        <button onclick="goHome()" class="mb-6 flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white dark:bg-cardbg rounded-full shadow-sm hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-gray-700 transition-all w-max">
+            <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Dashboard
+        </button>
+
+        <div id="quiz-setup" class="bg-white dark:bg-cardbg p-10 md:p-12 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 max-w-3xl mx-auto w-full">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">Configure AI Quiz 🧠</h2>
+            
+            <div class="space-y-8">
+                <div>
+   <label class="block text-base md:text-lg font-bold text-gray-500 dark:text-gray-400 mb-3">Number of Questions</label>
+                    <select id="quiz-count" class="w-full p-5 md:p-6 text-base md:text-lg rounded-xl bg-gray-50 dark:bg-darkbg border-2 border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 outline-none">
+        <option value="5">5 Questions (Quick - 0.5% boost)</option>
+        <option value="10">10 Questions (Standard - 1% boost)</option>
+        <option value="15">15 Questions (Deep Dive - 1.5% boost)</option>
+        <option value="25">25 Questions (Marathon - 2.5% boost)</option> <option value="50">50 Questions (Ultimate Test - 5% boost)</option> </select>
+</div>
+
+                <div>
+                    <label class="block text-base md:text-lg font-bold text-gray-500 dark:text-gray-400 mb-3">Difficulty Level</label>
+                    <select id="quiz-diff" class="w-full p-5 md:p-6 text-base md:text-lg rounded-xl bg-gray-50 dark:bg-darkbg border-2 border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 outline-none">
+                        <option value="Easy">Easy (Basics)</option>
+                        <option value="Medium" selected>Medium (Conceptual)</option>
+                        <option value="Hard">Hard (Complex Application)</option>
+                    </select>
+                </div>
+
+                <button onclick="generateQuiz()" id="btn-gen-quiz" class="w-full py-5 md:py-6 text-lg md:text-xl bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition flex justify-center items-center gap-3">
+                    <span>Generate Quiz</span>
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="quiz-active" class="hidden w-full max-w-3xl mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-base md:text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white px-5 py-3 rounded-full shadow-lg shadow-purple-500/50 flex items-center gap-2">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                    Question <span id="quiz-q-num">1</span></span>
+                <span class="text-sm font-medium text-gray-400">AI generated based on Syllabus</span>
+            </div>
+<div class="bg-gradient-to-br from-purple-900 via-gray-900 to-gray-900 p-12 md:p-16 rounded-3xl shadow-2xl border-2 border-purple-500/30 mb-10 relative overflow-hidden min-h-[280px] flex items-center">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl -ml-32 -mb-32"></div>
+                <h2 id="quiz-question-text" class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-100 relative z-10 leading-relaxed">
+                    Loading question...
+                </h2>
+            </div>
+
+            <div id="quiz-options" class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-10">
+                </div>
+
+            <button onclick="nextQuizQuestion()" id="btn-quiz-next" class="hidden w-full py-6 md:py-7 text-xl md:text-2xl bg-gray-800 dark:bg-gray-700 hover:bg-gray-900 text-white font-bold rounded-2xl transition shadow-lg">
+                Next Question <i data-lucide="arrow-right" class="w-4 h-4 inline ml-2"></i>
+            </button>
+        </div>
+
+        <div id="quiz-results" class="hidden bg-white dark:bg-cardbg p-8 rounded-3xl shadow-2xl text-center max-w-lg mx-auto animate-fade-in">
+            <div class="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-200 dark:shadow-none">
+                <i data-lucide="trophy" class="w-10 h-10 text-white"></i>
+            </div>
+            <h2 class="text-3xl font-extrabold text-gray-800 dark:text-white mb-2">Quiz Complete!</h2>
+            <p class="text-gray-500 mb-6">Here is how you performed</p>
+
+            <div class="text-5xl font-black text-purple-600 dark:text-purple-400 mb-2" id="quiz-final-score">0/0</div>
+            <div class="text-sm font-medium text-gray-400 uppercase tracking-wide mb-8">Final Score</div>
+
+            <button onclick="startQuizSetup()" class="w-full py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                Take Another Quiz
+            </button>
+        </div>
+    </section>
+
+    <div id="dev-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in" onclick="toggleDevModal()">
+        <div class="bg-white dark:bg-cardbg p-8 rounded-3xl shadow-2xl max-w-sm w-full relative border border-gray-100 dark:border-gray-700 text-center transform scale-100 transition-transform" onclick="event.stopPropagation()">
+            
+            <button onclick="toggleDevModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <div class="w-24 h-24 mx-auto bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full p-1 mb-4 shadow-lg">
+                <div class="w-full h-full bg-white dark:bg-cardbg rounded-full flex items-center justify-center overflow-hidden">
+                    <i data-lucide="code-2" class="w-10 h-10 text-indigo-500"></i>
+                    </div>
+            </div>
+
+            <h2 class="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Jod Om</h2>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">The Vibe Coder</p>
+            
+            <p class="text-gray-600 dark:text-gray-300 text-sm mb-6 leading-relaxed">
+                From tackling backlogs in the first 3 semesters, I realized the power of focused study. Inspired by AI's ability to read PDFs, I created Diplohub—a tool to deeply understand core topics from your course material.
+            </p>
+
+            <div class="flex justify-center gap-4">
+                <a href="https://github.com/jodom47" class="p-3 rounded-xl bg-gray-50 dark:bg-gray-700 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 hover:text-indigo-600 transition group" title="GitHub">
+                    <i data-lucide="github" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                </a>
+                <a href="https://instagram.com/om.jod.8" target="_blank" class="p-3 rounded-xl bg-gray-50 dark:bg-gray-700 hover:bg-pink-100 dark:hover:bg-pink-900/30 hover:text-pink-600 transition group" title="Instagram">
+                    <i data-lucide="instagram" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
